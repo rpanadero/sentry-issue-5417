@@ -9,11 +9,13 @@ export class CustomErrorHandlerService implements ErrorHandler {
   constructor() { }
 
   handleError(error: any): void {
-    Sentry.withScope(scope => {
-      scope.setTag('customTag', 'error');
-      scope.setExtra('test', 'this is a test');
-      scope.setContext('test', { value: 'test context' });
-      Sentry.captureException(error);
+    Zone.root.run(() => {
+      Sentry.withScope(scope => {
+        scope.setTag('customTag', 'error');
+        scope.setExtra('test', 'this is a test');
+        scope.setContext('test', { value: 'test context' });
+        Sentry.captureException(error);
+      });
     });
   }
 }
